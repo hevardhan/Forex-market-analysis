@@ -14,5 +14,5 @@ rates = mt5.copy_rates_range("EURUSD", mt5.TIMEFRAME_M5, utc_from, utc_to)
 
 df = pd.DataFrame(rates)
 df['time'] = pd.to_datetime(df['time'],unit='s')
-df.to_csv("datasets\eurusd\eurusd_m5.csv")
+df.to_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m5.csv")
 print(df)
