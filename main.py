@@ -28,29 +28,4 @@ if st.sidebar.button("Done"):
 
                 st.plotly_chart(fig)
             
-#     if tf_choice == "5 Min":
-#         df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m5.csv")
-#         del df['Unnamed: 0']
-#         slider = st.number_input("Enter the Number of Rows to Display",value=10)       
-#         st.dataframe(df.head(slider))
-#     if tf_choice == "15 Min":
-#         df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m15.csv")
-#         del df['Unnamed: 0']
-#         slider = st.number_input("Enter the Number of Rows to Display",value=10)       
-#         st.dataframe(df.head(slider))
-#     if tf_choice == "30 Min":
-#         df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m30.csv")
-#         del df['Unnamed: 0']
-#         slider = st.number_input("Enter the Number of Rows to Display",value=10)       
-#         st.dataframe(df.head(slider))
-#     if tf_choice == "1 Hr":
-#         df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_h1.csv")
-#         del df['Unnamed: 0']
-#         slider = st.number_input("Enter the Number of Rows to Display",value=10)       
-#         st.dataframe(df.head(slider))
-#     if tf_choice == "4 Hr Min":
-#         df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_h4.csv")
-#         del df['Unnamed: 0']
-#         slider = st.number_input("Enter the Number of Rows to Display",value=10)       
-#         st.dataframe(df.head(slider))
 
