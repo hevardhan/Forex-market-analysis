@@ -10,7 +10,7 @@ timezone = pytz.timezone("Etc/UTC")
 
 utc_from = datetime.datetime(2012, 1, 1, tzinfo=timezone)
 utc_to = datetime.datetime(2021, 12, 31, tzinfo=timezone)
-rates = mt5.copy_rates_range("EURUSD", mt5.TIMEFRAME_M5, utc_from, utc_to)
+rates = mt5.copy_rates_range("", mt5.TIMEFRAME_M5, utc_from, utc_to)
 
 df = pd.DataFrame(rates)
 df['time'] = pd.to_datetime(df['time'],unit='s')

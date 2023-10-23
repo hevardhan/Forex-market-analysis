@@ -1,17 +1,49 @@
+import streamlit as st
 import pandas as pd
+import plotly.graph_objects as go
+st.title("Forex-Market-Analysis")
+choice = st.selectbox("Select the Symbol",("EURUSD","AUDUSD","USDCHF"))
 
-# Sample DataFrame
-data = {'A': [1, 2, 2, 4, 5]}
-df = pd.DataFrame(data)
+if choice == "EURUSD":
+    tf_choice = st.selectbox("Select the Timeframe",("1 Min","5 Min","15 Min","30 Min","1 Hr","4 Hr","12 hr","Daily","Weekly","Monthly"))
+    if tf_choice == "1 Min":
+        df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m1.csv")
+        del df['Unnamed: 0']
+        slider = st.number_input("Enter the Number of Rows to Display",value=10)       
+        st.dataframe(df.head(slider))
+        ddf = df.head(slider)
+        if st.button("Show graph"):
+            fig = go.Figure(data=[go.Candlestick(x=ddf['time'],
+                open=ddf['open'],
+                high=ddf['high'],
+                low=ddf['low'],
+                close=ddf['close'])])
 
-# Create a 'B' column based on your original condition
-df['B'] = df['A'].apply(lambda x: 'Low' if x < 3 else 'High')
+            st.plotly_chart(fig)
+            
+    if tf_choice == "5 Min":
+        df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m5.csv")
+        del df['Unnamed: 0']
+        slider = st.number_input("Enter the Number of Rows to Display",value=10)       
+        st.dataframe(df.head(slider))
+    if tf_choice == "15 Min":
+        df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m15.csv")
+        del df['Unnamed: 0']
+        slider = st.number_input("Enter the Number of Rows to Display",value=10)       
+        st.dataframe(df.head(slider))
+    if tf_choice == "30 Min":
+        df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m30.csv")
+        del df['Unnamed: 0']
+        slider = st.number_input("Enter the Number of Rows to Display",value=10)       
+        st.dataframe(df.head(slider))
+    if tf_choice == "1 Hr":
+        df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_h1.csv")
+        del df['Unnamed: 0']
+        slider = st.number_input("Enter the Number of Rows to Display",value=10)       
+        st.dataframe(df.head(slider))
+    if tf_choice == "4 Hr Min":
+        df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_h4.csv")
+        del df['Unnamed: 0']
+        slider = st.number_input("Enter the Number of Rows to Display",value=10)       
+        st.dataframe(df.head(slider))
 
-# Create a new column 'B_Changes' to track changes in 'B'
-df['B_Changes'] = df['B'][df['B'] != df['B'].shift()]
-
-# Fill NaN values in 'B_Changes' with the corresponding 'B' values
-# df['B_Changes'].fillna(method='ffill', inplace=True)
-
-# Display the DataFrame
-print(df)
