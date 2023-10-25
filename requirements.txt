@@ -6,3 +6,4 @@ numpy
 pandas
 pytz
 streamlit
+MetaTrader5
