@@ -16,7 +16,7 @@ if choice == "EURUSD":
         graph_choice = st.selectbox("Choose the Type of graph",("Candle Stick","Box plot","Histogram","Line plot"))
         # tf_choice = st.selectbox("Select the Timeframe",("5 Min","15 Min","30 Min","1 Hr","4 Hr","12 hr","Daily","Weekly","Monthly"))
         # if tf_choice == "4 Hr":
-        df = pd.read_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_h4.csv")
+        df = pd.read_csv(r"eurusd_h4.csv")
         del df['Unnamed: 0']
         slider = st.number_input("Enter the Number of Rows to Display",value=10)       
         st.dataframe(df.head(slider))
