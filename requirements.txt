@@ -6,4 +6,4 @@ numpy
 pandas
 pytz
 streamlit
-MetaTrader5
+MetaTrader5==5.0.45
