@@ -1,0 +1,7 @@
+plotly
+scikit-learn==1.2.2
+pickle
+datetime
+numpy
+pandas
+pytz
