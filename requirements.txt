@@ -5,3 +5,4 @@ datetime
 numpy
 pandas
 pytz
+streamlit
