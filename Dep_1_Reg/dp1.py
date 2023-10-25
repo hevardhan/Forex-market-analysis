@@ -64,12 +64,14 @@ def start_trading():
     df.dropna(inplace=True)
     if mo_ch.get() == 'Linear Regression':
         model = pickle.load(open(r"D:\SY - Class\Forex-market-analysis\Dep_1_Reg\lin_reg.pkl","rb"))
+        y = model.predict(df[['timestamp_unix','open','high','low','close','SMA10','SMA20','Signal']])
+        cat = [1 if y[0] >= 0.5 else 0]
     else : 
         model = pickle.load(open(r"rfc.pkl","rb"))
-    y = model.predict(df[['timestamp_unix','open','high','low','close','SMA10','Signal','SMA20']])
+        y = model.predict(df[['timestamp_unix','open','high','low','close','SMA10','Signal','SMA20']])
+        cat = y
     # signal = [1 if p[0] >= 0.5 else 0 for p in y]
     # print(y)
-    cat = [1 if p[0] >= 0.5 else 0 for p in y]
     # print(signal)
     signal = df['Signal'].to_list()
     print(cat)
@@ -93,7 +95,7 @@ mo_choice = ttk.Combobox(main,textvariable=mo_ch)
 mo_choice['values'] = ('Linear Regression','Random Forest Classifier')
 n = t.StringVar() 
 choice = ttk.Combobox(main,textvariable=n)
-choice['values'] = ('EURUSD')
+choice['values'] = ('EURUSD','AUDUSD','USDCHF')
 
 txt_1 =     t.Label(main,text="Choose the Symbol : ",font=('Poppins Light',15))
 dev_label = t.Label(main,text='Enter the Deviation : ',font=('Poppins Light',15))
