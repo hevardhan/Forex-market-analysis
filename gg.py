@@ -1,25 +1,29 @@
-import streamlit as st
-import MetaTrader5 as mt5
+import yfinance as yf
+import numpy as np
 
-# Streamlit app title
-st.title("MetaTrader 5 Initialization")
+# Define the currency pair symbol
+currency_pair = 'EURUSD=X'
 
-# Initialize MetaTrader 5
-if st.button("Initialize MetaTrader 5"):
-    # Initialize MT5 connection
-    mt5.initialize()
+# Download the recent 10 values for a 15-minute chart
+data = yf.Ticker(currency_pair)
+recent_data = data.history(period="1d", interval="15m", actions=False)
 
-    # Check if initialization was successful
-    if not mt5.initialize():
-        st.error("MetaTrader 5 Initialization Failed")
-    else:
-        st.success("MetaTrader 5 Initialized Successfully")
+# Print the recent 10 values
+df = recent_data.tail(20)
+df.reset_index(inplace=True)
+df['timestamp_unix'] = (df['Datetime'].astype(np.int64) / 10**9).astype(int)
+df['SMA10'] = df['Close'].rolling(10).mean()
+df['SMA20'] = df['Close'].rolling(20).mean()
+def signal(raw):
+    
+    if raw['SMA10'] > raw['SMA20']:
+        return 1
+    elif raw['SMA10']  < raw['SMA20']:
+        return 0
+    else :
+        return None
 
-# Streamlit app clean-up (optional)
-st.text("You can perform other tasks here.")
-st.warning("Remember to properly close MT5 when you're done.")
-
-# Close MetaTrader 5 connection (optional)
-if st.button("Close MetaTrader 5"):
-    mt5.shutdown()
-    st.success("MetaTrader 5 Connection Closed")
+df['Signal'] = df.apply(signal,axis=1)
+signal = df['Signal'].to_list()
+df = df.tail(1)
+print(df)

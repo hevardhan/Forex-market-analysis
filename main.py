@@ -3,9 +3,10 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import datetime
-import pickle5 as pickle
+import pickle as pickle
 import numpy as np
 import pytz
+import yfinance as yf
 st.title("Forex-Market-Analysis")
 choice = st.sidebar.selectbox("Select the Symbol",("EURUSD"," "))
 
@@ -63,51 +64,72 @@ if choice == "EURUSD":
                 
 
     else :
+        yf_choose = st.selectbox("Select Input Mode",("Manual","Automatic"))
         model_choose = st.selectbox("Select the Model",("Random Forest Classification","Linear Regression")) 
-        open_   = st.number_input("Enter Open Price")
-        high   = st.number_input("Enter High Price")
-        low    = st.number_input("Enter Low Price")
-        close  = st.number_input("Enter Close Price")
-        SMA10  = st.number_input("Enter SMA 10 Value")
-        SMA20  = st.number_input("Enter SMA 20 Value")
-        # Create a DataFrame
-        data = {
-            "open": [open_],
-            "high": [high],
-            "low": [low],
-            "close": [close],
-            "SMA10": [SMA10],
-            "SMA20": [SMA20],
-        }
-        df = pd.DataFrame(data)
-        timezone = pytz.timezone("Etc/UTC")
-        df['time'] = datetime.datetime.now()
-        df['timestamp_unix'] = (df['time'].astype(np.int64) / 10**9).astype(int)
-        def signal(raw):
-            
-            if raw['SMA10'] > raw['SMA20']:
-                return 1
-            elif raw['SMA10']  < raw['SMA20']:
-                return 0
-            else :
-                return None
+        if yf_choose == "Manual":
+            open_   = st.number_input("Enter Open Price")
+            high   = st.number_input("Enter High Price")
+            low    = st.number_input("Enter Low Price")
+            close  = st.number_input("Enter Close Price")
+            SMA10  = st.number_input("Enter SMA 10 Value")
+            SMA20  = st.number_input("Enter SMA 20 Value")
+            # Create a DataFrame
+            data = {
+                "open": [open_],
+                "high": [high],
+                "low": [low],
+                "close": [close],
+                "SMA10": [SMA10],
+                "SMA20": [SMA20],
+            }
+            df = pd.DataFrame(data)
+            timezone = pytz.timezone("Etc/UTC")
+            df['time'] = datetime.datetime.now()
+            df['timestamp_unix'] = (df['time'].astype(np.int64) / 10**9).astype(int)
+            def signal(raw):
+                
+                if raw['SMA10'] > raw['SMA20']:
+                    return 1
+                elif raw['SMA10']  < raw['SMA20']:
+                    return 0
+                else :
+                    return None
 
-        df['Signal'] = df.apply(signal,axis=1)
-        signal = df['Signal'].to_list()
-        
+            df['Signal'] = df.apply(signal,axis=1)
+            signal = df['Signal'].to_list()
+        else : 
+            data = yf.Ticker(f'{choice}=X')
+            recent_data = data.history(period="1d", interval="15m", actions=False)
+            # Print the recent 10 values
+            df = recent_data.tail(20)
+            df.reset_index(inplace=True)
+            df['timestamp_unix'] = (df['Datetime'].astype(np.int64) / 10**9).astype(int)
+            df['SMA10'] = df['Close'].rolling(10).mean()
+            df['SMA20'] = df['Close'].rolling(20).mean()
+            def signal(raw):
+                
+                if raw['SMA10'] > raw['SMA20']:
+                    return 1
+                elif raw['SMA10']  < raw['SMA20']:
+                    return 0
+                else :
+                    return None
+
+            df['Signal'] = df.apply(signal,axis=1)
+            signal = df['Signal'].to_list()
+            df = df.tail(1)
+            df = df.rename(columns={'Open':'open',"High":"high","Low":"low","Close":"close"})
+            
         if st.button("show"):
             if model_choose == 'Linear Regression':
                 # Load the pickled model
                 with open(r"Dep_1_Reg\lin_reg.pkl", "rb") as model_file:
                     model = pickle.load(model_file)
                 if signal[0] != None:
-                    y = model.predict(df[['timestamp_unix','open','high','low','close','SMA10','Signal','SMA20']])
-                    # signal = [1 if p[0] >= 0.5 else 0 for p in y]
-                    # print(y)
-                    cat = [1 if p[0] >= 0.5 else 0 for p in y]
-                    # print(signal)
-                    # print(cat)
-                    # # print(signal)
+                    y = model.predict(df[['timestamp_unix','open','high','low','close','SMA10','SMA20','Signal']])
+                    print(y)
+                    cat = [1 if y[0] >= 0.5 else 0 ]
+
                     if cat[0] == 1:
                         if signal[0] == 1:
                             st.info(f"Profitable Signal : You can BUY the stock of {choice}.")
@@ -123,12 +145,6 @@ if choice == "EURUSD":
                     model = pickle.load(model_file)
                 if signal[0] != None:
                     y = model.predict(df[['timestamp_unix','open','high','low','close','SMA10','Signal','SMA20']])
-                    # signal = [1 if p[0] >= 0.5 else 0 for p in y]
-                    # print(y)
-                    # cat = [1 if p[0] >= 0.5 else 0 for p in y]
-                    # print(signal)
-                    # print(cat)
-                    # # print(signal)
                     if y[0] == 1:
                         if signal[0] == 1:
                             st.info(f"Profitable Signal : You can BUY the stock of {choice}.")

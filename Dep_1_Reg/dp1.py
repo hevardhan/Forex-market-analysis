@@ -63,7 +63,7 @@ def start_trading():
     df['timestamp_unix'] = df['time'].astype(np.int64) / 10**9 
     df.dropna(inplace=True)
     if mo_ch.get() == 'Linear Regression':
-        model = pickle.load(open(r"D:\SY - Class\Forex-market-analysis\Dep_1_Reg\lin_reg.pkl","rb"))
+        model = pickle.load(open(r"D:\SY - Class\Forex-market-analysis\Dep_1_Reg\lin_reg.pkl","rb"))    
         y = model.predict(df[['timestamp_unix','open','high','low','close','SMA10','SMA20','Signal']])
         cat = [1 if y[0] >= 0.5 else 0]
     else : 
