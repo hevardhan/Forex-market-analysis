@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import datetime
-import pickle as pickle
+import pickle5 as pickle
 import numpy as np
 import pytz
 import yfinance as yf
