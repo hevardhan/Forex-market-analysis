@@ -45,6 +45,7 @@ def start_trading():
     TIMEFRAME = mt5.TIMEFRAME_H4
     rates = mt5.copy_rates_from_pos(SYMBOL,TIMEFRAME,0,20)
     df = pd.DataFrame(rates)
+    print(df)
     df['SMA10'] = df['close'].rolling(10).mean()
     df['SMA20'] = df['close'].rolling(20).mean()
     def signal(raw):
@@ -83,6 +84,8 @@ def start_trading():
         elif signal[0] == 0:
             market_order(SYMBOL,VOLUME,'sell')
             messagebox.showinfo("","Sell Order Placed Successfully")
+        else :
+            messagebox.showinfo("","Order Not Placed - Non-Profitable Signal")
 
 main = t.Tk()
 main.state('zoomed')

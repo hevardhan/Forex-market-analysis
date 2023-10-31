@@ -10,9 +10,9 @@ timezone = pytz.timezone("Etc/UTC")
 
 utc_from = datetime.datetime(2012, 1, 1, tzinfo=timezone)
 utc_to = datetime.datetime(2021, 12, 31, tzinfo=timezone)
-rates = mt5.copy_rates_range("", mt5.TIMEFRAME_M5, utc_from, utc_to)
+rates = mt5.copy_rates_range("USDCHF", mt5.TIMEFRAME_H4, utc_from, utc_to)
 
 df = pd.DataFrame(rates)
 df['time'] = pd.to_datetime(df['time'],unit='s')
-df.to_csv(r"C:\Users\sarav\Documents\EDA\datasets\eurusd\eurusd_m5.csv")
+df.to_csv(r"C:\Users\sarav\Documents\EDA\datasets\usdchf\usdchf_h4.csv")
 print(df)
