@@ -14,7 +14,7 @@ choice = st.sidebar.selectbox("Select the Symbol",("EURUSD"," "))
 type_choice = st.sidebar.selectbox("Choose the Operation",("Visualization","Prediction"))
 if choice == "EURUSD":
     if type_choice == 'Visualization':
-        graph_choice = st.selectbox("Choose the Type of graph",("Candle Stick","Box plot","Histogram","Line plot"))
+        graph_choice = st.selectbox("Choose the Type of graph",("Candle Stick","Box plot","Scatter plot","Line plot"))
         # tf_choice = st.selectbox("Select the Timeframe",("5 Min","15 Min","30 Min","1 Hr","4 Hr","12 hr","Daily","Weekly","Monthly"))
         # if tf_choice == "4 Hr":
         df = pd.read_csv(r"eurusd_h4.csv")
@@ -39,15 +39,20 @@ if choice == "EURUSD":
                 )
                 # Show the plot
                 st.plotly_chart(fig)
-            elif graph_choice == 'Histogram':
-                fig = px.histogram(ddf, x=["open", "high", "low", "close"])
+            elif graph_choice == 'Scatter plot':
+                x_chi = st.selectbox("Choose X Axis",("open","high","low","close"))
+                y_chi = st.selectbox("Choose y Axis",("open","high","low","close"))
 
-                # Customize the plot
-                fig.update_layout(
-                    title="Histogram of Open, High, Low, and Close Values",
-                    xaxis_title="Price",
-                    yaxis_title="Count",
-                )
+                if x_chi != y_chi:
+                    fig = px.scatter(ddf,x=x_chi,y=y_chi,trendline='ols')
+                # fig = px.histogram(ddf, x=["open", "high", "low", "close"])
+
+                # # Customize the plot
+                # fig.update_layout(
+                #     title="Histogram of Open, High, Low, and Close Values",
+                #     xaxis_title="Price",
+                #     yaxis_title="Count",
+                # )
                 st.plotly_chart(fig)
             elif graph_choice == 'Line plot':
                 ddf['SMA10'] = ddf['close'].rolling(10).mean()
