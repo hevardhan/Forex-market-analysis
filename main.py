@@ -3,7 +3,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import datetime
-import pickle5 as pickle
+# import pickle5 as pickle
+import pickle
 import numpy as np
 import pytz
 import yfinance as yf
@@ -16,12 +17,17 @@ if choice == "EURUSD":
     if type_choice == 'Visualization':
         graph_choice = st.selectbox("Choose the Type of graph",("Candle Stick","Box plot","Scatter plot","Line plot"))
         # tf_choice = st.selectbox("Select the Timeframe",("5 Min","15 Min","30 Min","1 Hr","4 Hr","12 hr","Daily","Weekly","Monthly"))
-        # if tf_choice == "4 Hr":
+    # if tf_choice == "4 Hr":
+        if graph_choice == 'Scatter plot':
+            x_chi = st.selectbox("Choose X Axis",("open","high","low","close"))
+            y_chi = st.selectbox("Choose y Axis",("open","high","low","close"))
         df = pd.read_csv(r"eurusd_h4.csv")
         del df['Unnamed: 0']
         slider = st.number_input("Enter the Number of Rows to Display",value=10)       
         st.dataframe(df.head(slider))
         ddf = df.head(slider)
+        ddf['SMA10'] = ddf['close'].rolling(10).mean()
+        ddf['SMA20'] = ddf['close'].rolling(20).mean()
         if st.button("Show graph"):
             if graph_choice == 'Candle Stick':
                 fig = go.Figure(data=[go.Candlestick(x=ddf['time'],
@@ -29,6 +35,8 @@ if choice == "EURUSD":
                     high=ddf['high'],
                     low=ddf['low'],
                     close=ddf['close'])])
+                fig.add_trace(go.Scatter(x=ddf['time'], y=ddf['SMA10'], mode='lines', name='SMA10', line=dict(color='blue')))
+                fig.add_trace(go.Scatter(x=ddf['time'], y=ddf['SMA20'], mode='lines', name='SMA20', line=dict(color='red')))
 
                 st.plotly_chart(fig)
             elif graph_choice == 'Box plot':
@@ -40,23 +48,19 @@ if choice == "EURUSD":
                 # Show the plot
                 st.plotly_chart(fig)
             elif graph_choice == 'Scatter plot':
-                x_chi = st.selectbox("Choose X Axis",("open","high","low","close"))
-                y_chi = st.selectbox("Choose y Axis",("open","high","low","close"))
 
-                if x_chi != y_chi:
-                    fig = px.scatter(ddf,x=x_chi,y=y_chi,trendline='ols')
+                fig = px.scatter(ddf,x=x_chi,y=y_chi,trendline='ols')
                 # fig = px.histogram(ddf, x=["open", "high", "low", "close"])
 
-                # # Customize the plot
-                # fig.update_layout(
-                #     title="Histogram of Open, High, Low, and Close Values",
-                #     xaxis_title="Price",
-                #     yaxis_title="Count",
-                # )
+                # Customize the plot
+                fig.update_layout(
+                    title=f"Scatter Plot of {x_chi} vs {y_chi}",
+                    xaxis_title=x_chi,
+                    yaxis_title=y_chi,
+                )
                 st.plotly_chart(fig)
             elif graph_choice == 'Line plot':
-                ddf['SMA10'] = ddf['close'].rolling(10).mean()
-                ddf['SMA20'] = ddf['close'].rolling(20).mean()
+
                 fig = px.line(ddf, x="time", y=["close", "SMA10", "SMA20"])
 
                 # Customize the plot (optional)
